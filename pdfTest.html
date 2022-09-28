@@ -79,6 +79,11 @@
             doc
             .setFont("helvetica")
             .setFontSize(11)
+            .text(this.moreText, 0.5, 3.5, { align: "left", maxWidth: "7.5"});
+            //creating footer and saving file
+            doc
+            .setFont("helvetica")
+            .setFontSize(11)
             .setFontStyle("italic")
             .setTextColor(0, 0, 255)
             .text("This is a sample footer located .5 inches from bottom of page", 0.5, doc.internal.pageSize.height - 0.5)
