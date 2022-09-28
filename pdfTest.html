@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vuetify/2.3.10/vuetify.css"/>
+</head>
+<body>
+    <div id="app">
+        <v-app>
+          <v-container>
+            <v-row>
+              <v-col>
+                <h1>{{ heading }}</h1>
+                <v-btn color='black' class="white--text" @click='generatePDF'>Generate PDF</v-btn>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col>
+                <ul>
+                  <li v-for='item in items'>{{ item.title }} - {{ item.body }}</li>
+                </ul>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-app>
+      </div>
+    
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.12/vue.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vuetify/2.3.10/vuetify.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.6/jspdf.plugin.autotable.js"></script>
+<script>
+    new Vue({
+        el: '#app',
+        vuetify: new Vuetify(),
+        data() {
+      return{
+        heading: "Test PDF Generation",
+        moreText: [
+            "This is another few sentences of text to look at.",
+            "Just testing the paragraphs to see how they format",
+            "jsPDF likes arrays for sentences",
+            "Do paragraphs wrap?",
+            "Yes!",
+            "Not bad!"
+        ],
+        items: [
+            {title: "Item1", body: "I am item 1's body text"},
+            {title: "Item2", body: "I am item 2's body text"},
+            {title: "Item3", body: "I am item 3's body text"},
+            {title: "Item4", body: "I am item 4's body text"},
+        ]
+      }},
+      methods: {
+        generatePDF() {
+            const columns =[
+                {title: "Title", dataKey: "title"},
+                {title: "Body", dataKey: "body"}
+            ];
+            const doc = new jsPDF({
+                orientation: "portrait",
+                unit: "in",
+                format: "letter"
+            });
+            //text is placed using x,y coords
+            doc.setFontSize(16).text(this.heading, 0.5, 1.0);
+            //create a line under heading
+            doc.setLineWidth(0.01).line(0.5, 1.1, 8.0, 1.1);
+            //using autoTable plugin
+            doc.autoTable({
+                columns,
+                body: this.items,
+                margin: {left: 0.5, top: 1.25}
+            });
+            //using array of sentences
+            doc
+            .setFont("helvetica")
+            .setFontSize(11)
+            .setFontStyle("italic")
+            .setTextColor(0, 0, 255)
+            .text("This is a sample footer located .5 inches from bottom of page", 0.5, doc.internal.pageSize.height - 0.5)
+            .save(`${this.heading}.pdf`);
+        }
+      }
+    })
+</script>
+</html>
